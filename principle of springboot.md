@@ -103,9 +103,50 @@ springboot가 지원하는 의존성 관리 기능을 활용하는 방법
 
 maven의존성을 검사하고 싶을 때 mvnrepository.com에서 참조하자.
 
+---
 
+## 자동 설정 이해
 
+@springBootConfiguration은
 
+@SpringBootConfigurateon, @ComponentScan, @EnableAutoConfiguration 이 3개의 합과 같다.
+
+```java
+package me.whiteship;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Component;
+
+//@SpringBootApplication
+@SpringBootConfiguration
+@Component
+@EnableAutoConfiguration
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class,args);
+    }
+}
+
+```
+
+**자동 설정 개요**
+
+- @EnableAutoConfiguration (@SpringBootApplication 안에 숨어 있음)
+- 빈은 사실 두 단계로 나눠서 읽힘
+   - 1단계 : @ComponentScan
+   - 2단계 : @EnableAutoConfiguration
+- **@ComponentScan : Component라는 Annotation을 가진 class들을 Bean으로 등록한다. (Springboot에서 필요 없는 bean들을 자동적으로 걸러내는 filter조건을 가진다.) 자신의 패키지 내에 있는 하위 클래스나 패키지는 CompoenentScan이 가능하기 때문에 Bean으로 등록이 되지만 자신의 패키지 외부에 있는 패키지에 있는 클래스들은 Bean 으로 등록되지 않는다는 점에 주의하자!!!**
+   - @Component
+   - @Configuration @Repository @Service @Controller @RestController
+- **EnableAutoConfiguration** : 수 많은 자동 설정들이 조건에 따라 적용이 되서 수많은 Bean들을 생성되게 하는 Annotation
+   - **spring.factories** : 여러개의 configuration 파일들이 Autoconfiguration되어 있다. (스프링 컨벤션들)
+      자바 설정 파일들을 모두 다 읽어 들인다.( 조건이 주어져 있다. )
+      - org.springframework.boot.autoconfigure.EnableAutoConfiguration
+   - @Configuration
+   - @ConditionalOnXxxYyyZzz
 
 
 
