@@ -82,3 +82,46 @@ public class Application {
 
 ## 스프링 부트 프로젝트 생성기
 
+https://start/spring.io 페이지에 들어가서 spiring 프로젝트를 생성할 수 있다.
+
+pom.xml과 다양한 애플리케이션 실행 파일들이 만들어 진다.
+
+---
+
+## 스프링 부트 프로젝트 구조
+
+**메이븐 기본 프로젝트 구조와 동일**
+
+- 소스 코드(src\main\java)
+- 소스 리소스(src\main\resource)
+- 테스트 코드(src\test\java)
+- 테스트 리소스(src\test\resource)
+
+@SpringBootApplication이 Annotation이 붙어 있는 mainApplication의 위치 : 가장 상위 패키지에 위치할 것을 추천한다. <u>component scan을 해야하기 때문에</u>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
