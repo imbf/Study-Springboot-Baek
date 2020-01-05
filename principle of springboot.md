@@ -148,7 +148,227 @@ public class Application {
    - @Configuration
    - @ConditionalOnXxxYyyZzz
 
+---
 
+## 자동 설정 만들기 Starter와 AutoConfigure
+
+**자동 설정 구현**
+
+- Xxx-Spring-Boot-Autoconfigure 모듈 : 자동 설정
+
+- xxx-Spring-Boot-Starter 모듈 : 필요한 의존성 정의
+
+- 그냥 하나로 만들고 싶을 때는?
+
+   - Xxx-Spring-Boot-Starter
+
+- **구현 방법**
+
+   1.  의존성 추가(pom.xml)
+
+      ```xml
+          <!-- Add spring-boot autoconfigure and autoconfigure processor -->
+          <dependencies>
+              <dependency>
+                  <groupId>org.springframework.boot</groupId>
+                  <artifactId>spring-boot-autoconfigure</artifactId>
+              </dependency>
+              <dependency>
+                  <groupId>org.springframework.boot</groupId>
+                  <artifactId>spring-boot-autoconfigure-processor</artifactId>
+                  <optional>true</optional>
+              </dependency>
+          </dependencies>
+      
+          <!-- Add springboot dependencyManagement -->
+          <dependencyManagement>
+              <dependencies>
+                  <dependency>
+                      <groupId>org.springframework.boot</groupId>
+                      <artifactId>spring-boot-dependencies</artifactId>
+                      <version>2.0.3.RELEASE</version>
+                      <type>pom</type>
+                      <scope>import</scope>
+                  </dependency>
+              </dependencies>
+          </dependencyManagement>
+      ```
+
+   2. @Configuration 파일 작성
+
+      ```java
+      package me.whiteship;
+      
+      import org.springframework.context.annotation.Bean;
+      import org.springframework.context.annotation.Configuration;
+      
+      @Configuration
+      public class HolomanConfiguration {
+      
+          @Bean   //Holoman 이라는 Bean을 returng하는 설정파일을 만들었다.
+          public Holoman holoman(){
+              Holoman holoman = new Holoman();
+              holoman.setHowLong(5);
+              holoman.setName("Keesun");
+              return holoman;
+          }
+      
+      }
+      ```
+
+      
+
+   3. src/main/resource/META-INF에 spring.factories 파일 만들기
+
+   4. spring.factories 안에 자동 설정 파일 추가
+
+      ```
+      org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+        me.whiteship.HolomanConfiguration
+      ```
+
+   5. mvn install : .jar파일로 패키징
+
+   6. 원하는 프로젝트에 가서 의존성으로 추가할 수 있다.
+      pom.xml
+
+      ```xml
+      <!-- Add jar File Dependency -->
+      <dependency>
+        <groupId>me.whiteship</groupId>
+        <artifactId>jongjin-spring-boot-starter</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      ```
+
+**Bean 덮어쓰기 방지하기**
+
+- @ConditionalOnMissingBean
+   Bean 설정
+
+   ```java
+   package me.whiteship;
+   
+   import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+   import org.springframework.context.annotation.Bean;
+   import org.springframework.context.annotation.Configuration;
+   
+   @Configuration
+   public class HolomanConfiguration {
+   
+       @Bean   //Holoman 이라는 Bean을 returng하는 설정파일을 만들었다.
+       @ConditionalOnMissingBean   // 기본적으로 등록한 Bean이 쓰여야 하지만 우리는 Bean이 등록되지 않는 경우에만 이 Bean을 쓰겟다는 명령
+       public Holoman holoman(){
+           Holoman holoman = new Holoman();
+           holoman.setHowLong(5);
+           holoman.setName("Keesun");
+           return holoman;
+       }
+   
+   }
+   ```
+
+**굳이 Bean 설정을 장황하게 하지 않고 Bean의 값을 바꾸고 싶을 때 사용하는 방법 (resource/properties이용)**
+
+1. 프로젝트의 resources폴더에 application.properties파일 생성
+
+2. 파일 작성
+
+   ```
+   holoman.name = 종진
+   holoman.how-long = 100
+   ```
+
+3. 이전의 패키징 한 파일에 가서 HolomanProperties파일 생성
+
+   ```java
+   package me.whiteship;
+   
+   import org.springframework.boot.context.properties.ConfigurationProperties;
+   
+   @ConfigurationProperties("holoman")
+   public class HolomanProperties {
+       
+       private String name;
+       
+       private int howLong;
+   
+       public int getHowLong() {
+           return howLong;
+       }
+   
+       public String getName() {
+           return name;
+       }
+   
+       public void setHowLong(int howLong) {
+           this.howLong = howLong;
+       }
+   
+       public void setName(String name) {
+           this.name = name;
+       }
+       
+   }
+   
+   ```
+
+4. pom.xml 파일 수정
+
+   ```xml
+   <dependency>
+   	<groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-configuration-processor</artifactId>
+     <optional>true</optional>
+   </dependency>
+   ```
+
+5. HolomanConfiguration 파일 수정
+   Bean을 등록하지 않지만 프로젝트 파일을 import 하는 곳의 properties를 가져다가 사용할 수 있다.
+
+   ```java
+   package me.whiteship;
+   
+   import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+   import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+   import org.springframework.boot.context.properties.EnableConfigurationProperties;
+   import org.springframework.context.annotation.Bean;
+   import org.springframework.context.annotation.Configuration;
+   
+   @Configuration
+   @EnableConfigurationProperties(HolomanProperties.class)
+   public class HolomanConfiguration {
+   
+       @Bean   //Holoman 이라는 Bean을 returng하는 설정파일을 만들었다.
+       @ConditionalOnMissingBean   // 기본적으로 등록한 Bean이 쓰여야 하지만 우리는 Bean이 등록되지 않는 경우에만 이 Bean을 쓰겟다는 명령
+       public Holoman holoman(HolomanProperties properties){
+           Holoman holoman = new Holoman();
+           holoman.setHowLong(properties.getHowLong());
+           holoman.setName(properties.getName());
+           return holoman;
+       }
+   
+   }
+   ```
+
+---
+
+## 내장 웹 서버 이해
+
+**내장 서블릿 컨테이너**
+
+- 스프링 부트는 서버가 아니다.
+   - 톰캣 객체 생성
+   - 포트 설정
+   - 톰캣에 컨텍스트 추가
+   - 서블릿 만들기
+   - 톰캣에 서블릿 맵핑
+   - 톰캣 실행 대기
+- 이 모든 과정을 보다 상세히 또 유연하고 설정하고 실행해주는게 바로 스프링 부트의 자동 ㅓㄹ정.
+   - ServletWebServerFactoryAutoConfiguration (서블릿 웹 서버 생성)
+      - TomctServletWebServerFactoryCustomizer ( 서버 커스터마이징 )
+   - DispatcherSErvletAutoConfiguration
+      -  서블릿 만들고 등록
 
 
 
