@@ -228,13 +228,96 @@
 
 ## 외부 설정
 
-사용할 수 있는 외부 설정
+**사용할 수 있는 외부 설정**
 
-- properties
+- properties ( 스프링 부트가 애플리케이션을 구동할 때 자동으로 구동하는 파일 key, value 형태)
+
+   ```java
+   // resource/application.properties에 존재하는 값을 가져오는 가장 기본적인 코드
+   package econovation;
+   
+   import org.springframework.beans.factory.annotation.Value;
+   import org.springframework.boot.ApplicationArguments;
+   import org.springframework.boot.ApplicationRunner;
+   import org.springframework.stereotype.Component;
+   
+   @Component
+   public class SampleRunner implements ApplicationRunner {
+       @Value("${keesun.name}")
+       private String name;
+   
+       @Override
+       public void run(ApplicationArguments args) throws Exception {
+           System.out.println("====================");
+           System.out.println(name);
+           System.out.println("====================");
+       }
+   }
+   ```
+
 - YAML
+
 - 환경 변수
+
 - 커맨드 라인 아규먼트
-- 
+
+**프로퍼티 우선 순위**
+
+1. 홈 디렉토리에 있는 spring-boot-dev-tools.properties
+
+2. 테스트에 있는 @TestPropertySource
+
+3. @SpringBootTest 애노테이션의 properties 애트리뷰트
+
+4. 커맨드 라인 아규먼트
+
+   ```
+   java -jar target/springinit-0.0.1-SNAPSHOT.jar --keesun.name=whiteship
+   ```
+
+   
+
+5. SPRING_APPLICATION_JSON ( 환경 변수 또는 시스템 프로퍼티) 에 들어있는 프로퍼티
+
+6. ServletConfig 파라미터
+
+7. ServletContext 파라미터
+
+8. java:comp/env JNDI 애트리뷰트
+
+9. System.getProperteis() 자바 시스템 프로퍼티
+
+10. OS 환경 변수
+
+11. RandomValuepropertySource
+
+12. JAR 밖에 있는 특정 프로파일용 application properties
+
+13. JAR 안에 있는 특정 프로파일용 application properties
+
+14. JAR 밖에 있는 application properties
+
+15. JAR 안에 있는 application properties
+
+16. @PropertySource
+
+17. 기본 프로퍼티 (SpringApplication.setDefaultProperties)
+
+**application.properties 우선순위** 
+
+1. file:./config.
+2. file:./
+3. classpath:/config/
+4. classpath:/
+
+**랜덤값 설정하기**
+
+- ${random.*}
+
+**플레이스 홀더**
+
+- name=keesun
+- fullName = ${name} back
 
 
 
