@@ -1,17 +1,16 @@
 package econovation;
 
-import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.context.ApplicationListener;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
+
 @Component
-public class SampleListener implements ApplicationListener<ApplicationStartedEvent> {
+public class SampleListener implements CommandLineRunner {
 
     @Override
-    public void onApplicationEvent(ApplicationStartedEvent event) {
-        System.out.println("======================");
-        System.out.println("Applcation is starting");
-        System.out.println("======================");
-
+    public void run(String... args) throws Exception {
+        Arrays.stream(args).forEach(System.out::println);
     }
 }

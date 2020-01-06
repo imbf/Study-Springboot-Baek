@@ -1,4 +1,4 @@
-# 스프링 부트 활용
+스프링 부트 활용
 
 ## 스프링 부트 활용 소개
 
@@ -147,9 +147,94 @@
       
       ```
 
+- WebApplication Type 설정
+
+   - 기본적으로 Servlet이다. WebApplication을 REACTIVE로 사용할 수도 있다.
+
+      ```java
+      package econovation;
       
+      
+      import org.springframework.boot.SpringApplication;
+      import org.springframework.boot.WebApplicationType;
+      import org.springframework.boot.autoconfigure.SpringBootApplication;
+      
+      @SpringBootApplication
+      public class SpringinitApplication {
+          public static void main(String[] args) {
+              SpringApplication app = new SpringApplication(SpringinitApplication.class);
+              app.setWebApplicationType(WebApplicationType.NONE);
+              app.run(args);
+          }
+      }
+      ```
 
+- Application Argument 사용하기
 
+   - ApplicationArguments를 Bean으로 등록해 주니까 가져다 쓰면 됨
+
+   ![image-20200106200941763](/Users/baejongjin/Library/Application Support/typora-user-images/image-20200106200941763.png)
+
+   ApplicationArgument는 둘다 콘솔로 들어오기는 하지만 -D로 들어오는 것은 VM옵션이고 --로 들어오는 것은 arguments이다.
+
+- 애플리케이션 실행한 뒤 뭔가 실행하고 싶을 때
+
+   - ApplicationRunner (추천)
+
+      ```java
+      package econovation;
+      
+      import org.springframework.boot.ApplicationArguments;
+      import org.springframework.boot.ApplicationRunner;
+      import org.springframework.stereotype.Component;
+      
+      
+      @Component
+      public class SampleListener implements ApplicationRunner {
+      
+          @Override
+          public void run(ApplicationArguments args) throws Exception{
+              System.out.println("foo: " + args.containsOption("foo"));
+              System.out.println("bar: " + args.containsOption("bar"));
+          }
+      
+      }
+      ```
+
+   - CommandLineRunner ( JVM 옵션을 쓸 수 없다.)
+
+      ```java
+      package econovation;
+      
+      import org.springframework.boot.CommandLineRunner;
+      import org.springframework.stereotype.Component;
+      
+      import java.util.Arrays;
+      
+      
+      @Component
+      public class SampleListener implements CommandLineRunner {
+      
+          @Override
+          public void run(String... args) throws Exception {
+              Arrays.stream(args).forEach(System.out::println);
+          }
+      }
+      ```
+
+   - 순서 지정 가능 @Order ( @Order(1) )
+
+---
+
+## 외부 설정
+
+사용할 수 있는 외부 설정
+
+- properties
+- YAML
+- 환경 변수
+- 커맨드 라인 아규먼트
+- 
 
 
 
