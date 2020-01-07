@@ -1,0 +1,28 @@
+{
+  "groups": [
+    {
+      "name": "jongjin",
+      "type": "econovation.JongjinProperties",
+      "sourceType": "econovation.JongjinProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "jongjin.age",
+      "type": "java.lang.Integer",
+      "sourceType": "econovation.JongjinProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "jongjin.full-name",
+      "type": "java.lang.String",
+      "sourceType": "econovation.JongjinProperties"
+    },
+    {
+      "name": "jongjin.name",
+      "type": "java.lang.String",
+      "sourceType": "econovation.JongjinProperties"
+    }
+  ],
+  "hints": []
+}

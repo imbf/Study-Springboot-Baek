@@ -354,6 +354,36 @@
 - name=keesun
 - fullName = ${name} back
 
+### **타입-세이프 프로퍼티 @ConfigurationProperties**
+
+- 여러 프로퍼티를 묶어서 읽어올 수 있음
+
+- 빈으로 등록해서 다른 빈에 주입할 수 있음
+
+   - @EnableConfigurationProperties
+
+   - @Component
+
+   - @Bean
+
+      
+
+- 융통성 있는 바인딩
+
+   - context-path (케밥)
+   - context_path (언더스코어)
+   - contextPath (캐멀)
+   - CONTEXTPATH
+
+- 프로퍼티 타입 컨버전
+
+   - @Durationunit
+
+- 프로퍼티 값 검증
+
+   - @Validated
+   - JSR-303 (@NotNull , ...)
+
 
 
 
