@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 public class SampleRunner implements ApplicationRunner {
 
     @Autowired
-    JongjinProperties jongjinProperties;
+    private String hello;
 
+    @Autowired
+    private JongjinProperties jongjinProperties;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("====================");
-        System.out.println(jongjinProperties.getName());
-        System.out.println(jongjinProperties.getAge());
-        System.out.println(jongjinProperties.getFullName());
+        System.out.println(hello);
         System.out.println("====================");
     }
 }

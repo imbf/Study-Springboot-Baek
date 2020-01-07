@@ -22,6 +22,12 @@
       "name": "jongjin.name",
       "type": "java.lang.String",
       "sourceType": "econovation.JongjinProperties"
+    },
+    {
+      "name": "jongjin.session-timeout",
+      "type": "java.time.Duration",
+      "sourceType": "econovation.JongjinProperties",
+      "defaultValue": "30s"
     }
   ],
   "hints": []

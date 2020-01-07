@@ -362,29 +362,307 @@
 
    - @EnableConfigurationProperties
 
-   - @Component
+   - **@Component**
 
    - @Bean
 
-      
+      resources/application.properties
 
-- 융통성 있는 바인딩
+      ```v
+      jongjin.name = jongjin
+      jongjin.age = ${random.int(0,100)}
+      jongjin.fullName = ${jongjin.name}  Bae
+      ```
+
+      JongjinProperties.java
+
+      ```java
+      package econovation;
+      
+      import org.springframework.boot.context.properties.ConfigurationProperties;
+      import org.springframework.stereotype.Component;
+      
+      @Component
+      @ConfigurationProperties("jongjin")
+      public class JongjinProperties {
+      
+          private String name;
+      
+          private int age;
+      
+          private String fullName;
+      
+          public String getName() {
+              return name;
+          }
+      
+          public int getAge() {
+              return age;
+          }
+      
+          public String getFullName() {
+              return fullName;
+          }
+      
+          public void setName(String name) {
+              this.name = name;
+          }
+      
+          public void setAge(int age) {
+              this.age = age;
+          }
+      
+          public void setFullName(String fullName) {
+              this.fullName = fullName;
+          }
+      }
+      ```
+
+      sampleRunner.java
+
+      ```java
+      package econovation;
+      
+      import org.springframework.beans.factory.annotation.Autowired;
+      import org.springframework.boot.ApplicationArguments;
+      import org.springframework.boot.ApplicationRunner;
+      import org.springframework.stereotype.Component;
+      
+      @Component
+      public class SampleRunner implements ApplicationRunner {
+      
+          @Autowired //Bean 꺼내쓰기
+          JongjinProperties jongjinProperties;
+      
+          @Override
+          public void run(ApplicationArguments args) throws Exception {
+              System.out.println("====================");
+              System.out.println(jongjinProperties.getName());
+              System.out.println(jongjinProperties.getAge());
+              System.out.println(jongjinProperties.getFullName());
+              System.out.println("====================");
+          }
+      }
+      
+      ```
+
+      ```java
+      package econovation;
+      
+      
+      import org.springframework.boot.SpringApplication;
+      import org.springframework.boot.WebApplicationType;
+      import org.springframework.boot.autoconfigure.SpringBootApplication;
+      import org.springframework.boot.context.properties.EnableConfigurationProperties;
+      
+      //@EnableConfigurationProperties(JongjinProperties.class) Annotation이 자동등록 되어 있으니까 굳이 써주지 않아도 된다.
+      @SpringBootApplication
+      public class SpringinitApplication {
+          public static void main(String[] args) {
+              SpringApplication app = new SpringApplication(SpringinitApplication.class);
+              app.setWebApplicationType(WebApplicationType.NONE);
+              app.run(args);
+          }
+      }
+      ```
+
+- 융통성 있는 바인딩 (Relaxed Binding)
 
    - context-path (케밥)
    - context_path (언더스코어)
    - contextPath (캐멀)
    - CONTEXTPATH
 
-- 프로퍼티 타입 컨버전
+- 프로퍼티 타입 컨버전 
 
-   - @Durationunit
+   - @DurationUnit (시간정보를 받고 싶을 때 사용할 수 있다.)
+      application.properties에서 작성한 property에 대한 Value값을 DurationUnit을 이용해서 Conversion이 일어난다.
+
+      ```java
+      package econovation;
+      
+      import org.springframework.boot.context.properties.ConfigurationProperties;
+      import org.springframework.boot.convert.DurationUnit;
+      import org.springframework.stereotype.Component;
+      
+      import java.time.Duration;
+      import java.time.temporal.ChronoUnit;
+      
+      @Component
+      @ConfigurationProperties("jongjin")
+      public class JongjinProperties { // Type Safe하게 Bean으로 만들었다.
+      
+          private String name;
+      
+          private int age;
+      
+          private String fullName;
+      
+          @DurationUnit(ChronoUnit.SECONDS)
+          private Duration sessionTimeout = Duration.ofSeconds(30);
+      
+          public Duration getSessionTimeout() {
+              return sessionTimeout;
+          }
+      
+          public void setSessionTimeout(Duration sessionTimeout) {
+              this.sessionTimeout = sessionTimeout;
+          }
+      
+          public String getName() {
+              return name;
+          }
+      
+          public int getAge() {
+              return age;
+          }
+      
+          public String getFullName() {
+              return fullName;
+          }
+      
+          public void setName(String name) {
+              this.name = name;
+          }
+      
+          public void setAge(int age) {
+              this.age = age;
+          }
+      
+          public void setFullName(String fullName) {
+              this.fullName = fullName;
+          }
+      }
+      
+      ```
+
+      
 
 - 프로퍼티 값 검증
 
    - @Validated
+
+      ```java
+      package econovation;
+      
+      import org.springframework.boot.context.properties.ConfigurationProperties;
+      import org.springframework.boot.convert.DurationUnit;
+      import org.springframework.stereotype.Component;
+      import org.springframework.validation.annotation.Validated;
+      
+      import javax.validation.constraints.NotEmpty;
+      import java.time.Duration;
+      import java.time.temporal.ChronoUnit;
+      
+      @Component
+      @ConfigurationProperties("jongjin")
+      @Validated
+      public class JongjinProperties { // Type Safe하게 Bean으로 만들었다.
+      
+          @NotEmpty
+          private String name;
+      
+          private int age;
+      
+          private String fullName;
+      
+          @DurationUnit(ChronoUnit.SECONDS)
+          private Duration sessionTimeout = Duration.ofSeconds(30);
+      
+          public Duration getSessionTimeout() {
+              return sessionTimeout;
+          }
+      
+          public void setSessionTimeout(Duration sessionTimeout) {
+              this.sessionTimeout = sessionTimeout;
+          }
+      
+          public String getName() {
+              return name;
+          }
+      
+          public int getAge() {
+              return age;
+          }
+      
+          public String getFullName() {
+              return fullName;
+          }
+      
+          public void setName(String name) {
+              this.name = name;
+          }
+      
+          public void setAge(int age) {
+              this.age = age;
+          }
+      
+          public void setFullName(String fullName) {
+              this.fullName = fullName;
+          }
+      }
+      
+      ```
+
+      
+
    - JSR-303 (@NotNull , ...)
 
+- 메타 정보 생성
 
+- **@Value 보다 @ConfigurationProperties를 사용할 것을 추천한다.**
+
+   - Value는 Spring Expression Language를 사용할 수 있지만 @ConfigurationProperties는 사용하지 못한다.
+
+### Getter 와 Setter를 만들어 주는 단축기 : ctrl + n
+
+---
+
+## 프로파일
+
+**@Profile 애노테이션은 어디에?**
+
+- @Configuration
+
+   ```java
+   package econovation.config;
+   
+   import org.springframework.context.annotation.Bean;
+   import org.springframework.context.annotation.Configuration;
+   import org.springframework.context.annotation.Profile;
+   
+   @Profile("prod")
+   @Configuration
+   public class BaseConfiguration {
+   
+       @Bean
+       public String hello(){
+           return "hello";
+       }
+   }
+   // 이 Bean 설정 파일이 prod라는 설정파일이 아니면 사용이 되지 않는다.
+   
+   ```
+
+- @Component
+
+**@어떤 프로파일을 활성화 할 것인가?**
+
+- spring.profiles.active
+
+   resources/application.properties 에서 작성하는 property
+
+   ```java
+   spring.profiles.active=prod
+   ```
+
+   Command Line에서 application.properties 파일의 property를 오버라이딩 하는 Command
+
+   ```java
+   java -jar springinit-1.0-SNAPSHOT.jar --spring.profiles.active=test
+   ```
+
+   
 
 
 
