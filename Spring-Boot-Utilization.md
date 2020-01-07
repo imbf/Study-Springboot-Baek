@@ -267,6 +267,38 @@
 
 2. 테스트에 있는 @TestPropertySource
 
+   SpringinitApplicationTests.java
+
+   ```java
+   package econovation;
+   
+   import org.junit.Test;
+   import org.junit.runner.RunWith;
+   import org.springframework.beans.factory.annotation.Autowired;
+   import org.springframework.boot.test.context.SpringBootTest;
+   import org.springframework.core.env.Environment;
+   import org.springframework.test.context.TestPropertySource;
+   import org.springframework.test.context.junit4.SpringRunner;
+   
+   import static org.assertj.core.api.Assertions.assertThat;
+   
+   @RunWith(SpringRunner.class)
+   @TestPropertySource(locations = "classpath:/test.properties")
+   @SpringBootTest
+   public class SpringinitApplicationTests {
+   
+       @Autowired
+       Environment environment;
+   
+       @Test
+       public void contextLoads(){
+           assertThat(environment.getProperty("keesun.name")).isEqualTo("keesun2");
+       }
+   
+   }
+   
+   ```
+
 3. @SpringBootTest 애노테이션의 properties 애트리뷰트
 
 4. 커맨드 라인 아규먼트
@@ -274,8 +306,6 @@
    ```
    java -jar target/springinit-0.0.1-SNAPSHOT.jar --keesun.name=whiteship
    ```
-
-   
 
 5. SPRING_APPLICATION_JSON ( 환경 변수 또는 시스템 프로퍼티) 에 들어있는 프로퍼티
 
@@ -299,11 +329,16 @@
 
 15. JAR 안에 있는 application properties
 
+    ```java
+    keesun.name = keesun
+    keesun.age = ${random.int}
+    ```
+
 16. @PropertySource
 
-17. 기본 프로퍼티 (SpringApplication.setDefaultProperties)
+17. 기본 프로퍼티 (SpringApplication.setDefaultProperties) : 스프링 부트에서 설정 안했을 때 들어오는 property
 
-**application.properties 우선순위** 
+**application.properties 가 적용되는 우선순위** 
 
 1. file:./config.
 2. file:./
