@@ -18,6 +18,8 @@ public class SampleRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("====================");
         System.out.println(hello);
+        System.out.println(jongjinProperties.getName());
+        System.out.println(jongjinProperties.getFullName());
         System.out.println("====================");
     }
 }

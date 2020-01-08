@@ -662,7 +662,15 @@
    java -jar springinit-1.0-SNAPSHOT.jar --spring.profiles.active=test
    ```
 
-   
+   application-prod.properties 와 application-test.properties 가 application.properties를 오버라이딩 한다.
+
+**어떤 프로파일을 추가할 것인가?**
+
+- spring.profiles.include=proddb  (추가할 프로파일을 추가하는 것)
+
+**프로파일용 프로퍼티**
+
+- application-{profile}.properties
 
 
 
