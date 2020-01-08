@@ -1,0 +1,11 @@
+2020-01-08 10:29:22.694  INFO 12885 --- [main] econovation.SpringinitApplication        : Starting SpringinitApplication on baejongjins-MacBook-Pro.local with PID 12885 (/Users/baejongjin/Documents/Study/Back-End/Study-Springboot-Baek/springinit/target/classes started by baejongjin in /Users/baejongjin/Documents/Study/Back-End/Study-Springboot-Baek/springinit)
+2020-01-08 10:29:22.704  INFO 12885 --- [main] econovation.SpringinitApplication        : The following profiles are active: prod,proddb
+2020-01-08 10:29:24.607  INFO 12885 --- [main] econovation.SpringinitApplication        : Started SpringinitApplication in 2.79 seconds (JVM running for 3.802)
+2020-01-08 10:34:02.086  INFO 12908 --- [main] econovation.SpringinitApplication        : Starting SpringinitApplication on baejongjins-MacBook-Pro.local with PID 12908 (/Users/baejongjin/Documents/Study/Back-End/Study-Springboot-Baek/springinit/target/classes started by baejongjin in /Users/baejongjin/Documents/Study/Back-End/Study-Springboot-Baek/springinit)
+2020-01-08 10:34:02.090  INFO 12908 --- [main] econovation.SpringinitApplication        : The following profiles are active: prod,proddb
+2020-01-08 10:34:02.819  INFO 12908 --- [main] econovation.SpringinitApplication        : Started SpringinitApplication in 1.007 seconds (JVM running for 1.549)
+2020-01-08 10:34:02.820  INFO 12908 --- [main] econovation.SampleRunner                 : ==================
+2020-01-08 10:34:02.820  INFO 12908 --- [main] econovation.SampleRunner                 : hello
+2020-01-08 10:34:02.829  INFO 12908 --- [main] econovation.SampleRunner                 : dbdbdb
+2020-01-08 10:34:02.829  INFO 12908 --- [main] econovation.SampleRunner                 : jongjin prod
+2020-01-08 10:34:02.829  INFO 12908 --- [main] econovation.SampleRunner                 : ==================
