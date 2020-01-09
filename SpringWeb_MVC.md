@@ -281,22 +281,198 @@ public class UserControllerTest {
 
 ---
 
-## Thymeleaf
+## 동적 템플릿 엔진 (Thymeleaf )
 
-**스프링 부트가 자동 설정을 지원하는 템플릿 엔진**
+**스프링 부트가 자동 설정을 지원하는 템플릿 엔진** : 주로 View를 만드는데 사용하고, Code Generation, Email 에 사용
 
 - FreeMarker
 - Groovy
 - **Thymeleaf**
 - Mustache
 
-**JSP를 권장하지 않는 이유**
+**JSP를 권장하지 않는 이유** ( 스프링 부트가 지향하는 바와 confliction이 있다. )
 
 - JAR 패키징 할 때는 동작하지 않고, WAR 패키징 해야 함.
 - Undertow는 JSP를 지원하지 않음.
 - https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-jsp-limitations
+   (JSP 제약 사항)
 
+**Thymeleaf 사용하기** : Thymeleaf가 독자적으로 최종적인 view를 만들어준다.
 
+- https://www.thymeleaf.org/
+
+- https://www.thymeleaf.org/doc/articles/standarddialect5minutes.html
+
+- 의존성 추가 
+
+   ```xml
+   <dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-thymeleaf</artifactId>
+   </dependency>
+   ```
+
+- 템플릿 파일 위치 : /src/main/resources/template
+
+- 예제 : https://github.com/thymeleaf/thymeleafexamples-stsm/blob/3.0-master/src/main/webapp/WEB-INF/templates/seedstartermng.html
+
+   Test/SampleControllerTest.java
+
+   ```java
+   package econovation.springbootmvc;
+   
+   import org.junit.Test;
+   import org.junit.runner.RunWith;
+   import org.springframework.beans.factory.annotation.Autowired;
+   import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+   import org.springframework.test.context.junit4.SpringRunner;
+   import org.springframework.test.web.servlet.MockMvc;
+   
+   import static org.hamcrest.Matchers.containsString;
+   import static org.hamcrest.Matchers.is;
+   import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+   import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+   import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+   
+   @RunWith(SpringRunner.class)
+   @WebMvcTest(SampleController.class)
+   public class SampleControllerTest {
+   
+       @Autowired
+       MockMvc mockMvc;
+   
+       @Test
+       public void hello() throws Exception{
+           // 요청 "/hello"
+           // 응답
+           // - 뷰 이름 : hello
+           // - 모델 name : jongjin
+           mockMvc.perform(get("/hello"))
+                   .andExpect(status().isOk())
+                   .andDo(print())
+                   .andExpect(view().name("hello"))
+                   .andExpect(model().attribute("name", is("jongjin")))
+                   .andExpect(content().string(containsString("jongjin")));
+       }
+   }
+   ```
+
+   hello.html
+
+   ```java
+   <!DOCTYPE html>
+   <html lang="en" xmlns:th="http://www.thymeleaf.org">
+   <head>
+       <meta charset="UTF-8">
+       <title>Title</title>
+   </head>
+   <body>
+   <h1 th:text="${name}"></h1>
+   </body>
+   </html>
+   ```
+
+   SampleController.java
+
+   ```java
+   package econovation.springbootmvc;
+   
+   import org.springframework.stereotype.Controller;
+   import org.springframework.ui.Model;
+   import org.springframework.web.bind.annotation.GetMapping;
+   import org.springframework.web.bind.annotation.RestController;
+   
+   @Controller
+   public class SampleController {
+   
+       @GetMapping("/helloa")
+       public String hello(Model model){
+           model.addAttribute("name","jongjin");
+           return "hello";
+           // 그냥 Controller 이기 때문에 hello는 응답의 본문이 아니다!!!!
+           // RestController 일 경우에 hello는 응답의 본문이 된다.
+       }
+   }
+   
+   ```
+
+Thymeleaf는 Servlet Container의 독립적인 렌더링 엔진 이기 때문에 view의 렌더링 결과를 확인할 수 있다.
+
+**Test 코드 작성시 junit가 intellij에서 생성해주는 프로젝트에는 기본적으로 의존성이 exclusion이 되어 있기 때문에 Test코드를 작성하기 위해선 의존성 exclusion을 없애야 한다.**
+
+---
+
+## HtmlUnit
+
+**HtmlUnit** : HTML을 단위 테스트 하기 위한 Tool 이다.
+
+**HTML 템플릿 뷰 테스트를 보다 전문적으로 하자.**
+
+- http://htmlunit.sourceforge.net/
+
+- http://htmlunit.sourceforge.net/gettingStarted.html
+
+- 의존성 추가
+
+   ```xml
+   <dependency>
+       <groupId>org.seleniumhq.selenium</groupId>
+       <artifactId>htmlunit-driver</artifactId>
+       <scope>test</scope>
+   </dependency>
+   
+   <dependency>
+       <groupId>net.sourceforge.htmlunit</groupId>
+       <artifactId>htmlunit</artifactId>
+       <scope>test</scope>
+   </dependency>
+   ```
+
+- @Autowire
+
+   Test/SampleControllerTest.java
+
+   ```java
+   package econovation.springbootmvc;
+   
+   import com.gargoylesoftware.htmlunit.WebClient;
+   import com.gargoylesoftware.htmlunit.html.HtmlHeading1;
+   import com.gargoylesoftware.htmlunit.html.HtmlPage;
+   import org.junit.Test;
+   import org.junit.runner.RunWith;
+   import org.springframework.beans.factory.annotation.Autowired;
+   import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+   import org.springframework.test.context.junit4.SpringRunner;
+   import org.springframework.test.web.servlet.MockMvc;
+   
+   import static org.assertj.core.api.Assertions.assertThat;
+   
+   
+   @RunWith(SpringRunner.class)
+   @WebMvcTest(SampleController.class)
+   public class SampleControllerTest {
+   
+       @Autowired
+       WebClient webClient;
+   
+       @Test
+       public void hello() throws Exception{
+   
+           HtmlPage page = webClient.getPage("/hello");
+           HtmlHeading1 h1 = page.getFirstByXPath("//h1");
+           assertThat(h1.getTextContent()).isEqualToIgnoringCase("jongjin");
+       }
+   }
+   ```
+
+---
+
+## ExceptionHandler
+
+**스프링 @MVC 예외 처리 방법**
+
+- @ControllerAdvice
+- @ExchangeHandler
 
 
 
