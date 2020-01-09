@@ -199,7 +199,104 @@ public class UserControllerTest {
    
    ```
 
+---
+
+## 웹 JAR
+
+**웹 JAR :** react.js, view.js, ... 와 같이 Jar파일로 Dependency를 추가할 수 있는 파일 
+
+**Jquery 추가하기**
+
+1. pom.xml
+
+   ```xml
+   <!-- https://mvnrepository.com/artifact/org.webjars.bower/jquery -->
+   <dependency>
+       <groupId>org.webjars.bower</groupId>
+       <artifactId>jquery</artifactId>
+       <version>3.4.1</version>
+   </dependency>
+   ```
+
+2. hello.html
+
+   ```html
+   <!DOCTYPE html>
+   <html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <title>hello</title>
+   </head>
+   <body>
+   Hello Static Resource abc
+   </body>
+   <script src="/webjars/jquery/3.4.1/dist/jquery.min.js"></script>
+   <script>
+       $(function(){
+           alert("ready!");
+       });
+   </script>
+   </html>
+   ```
+
    
+
+**웹JAR 맵핑 : "/webjars/\**"**
+
+- 버전 생략하고 사용하려면 (jquery에 버젼을 빼도 된다.)
+
+   - webjars-locator-core 의존성 추가 (resource chaining에 관련)
+
+      pom.xml
+
+      ```xml
+      <!-- https://mvnrepository.com/artifact/org.webjars/webjars-locator-core -->
+      <dependency>
+          <groupId>org.webjars</groupId>
+          <artifactId>webjars-locator-core</artifactId>
+          <version>0.43</version>
+      </dependency>
+      ```
+
+---
+
+## index 페이지와 파비콘
+
+**웰컴 페이지**
+
+- index.html 찾아 보고 있으면 제공
+- index.템플릿 찾아 보고 있으면 제공.
+- 둘 다 없으면 에러 페이지
+
+**파비콘** : 웹 페이지 상단의 Window Title 왼쪽에 위치하는 조그마난 그림을 일컫는다.
+
+- favicon.ico
+- 파비콘 만들기 https://favicon.io/
+- 파비콘이 안 바뀔 때?
+   - https://stackoverflow.com/questions/2208933/how-do-i-force-a-favicon-refresh (2번째 방법)
+      1. Type in www.yoursite.com/favicon.ico (or www.yoursite.com/apple-touch-icon.png, etc)
+      2. push **Enter**
+      3. **ctrl + F5**
+      4. Restart Browser (IE, Firefox)
+
+---
+
+## Thymeleaf
+
+**스프링 부트가 자동 설정을 지원하는 템플릿 엔진**
+
+- FreeMarker
+- Groovy
+- **Thymeleaf**
+- Mustache
+
+**JSP를 권장하지 않는 이유**
+
+- JAR 패키징 할 때는 동작하지 않고, WAR 패키징 해야 함.
+- Undertow는 JSP를 지원하지 않음.
+- https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-jsp-limitations
+
+
 
 
 
