@@ -610,7 +610,22 @@ public class SampleController {
 
 ---
 
+## CORS (Cross - Origin Resource Sharing)
 
+**SOP와 CORS**
+
+- Single-Origin Policy : 같은 Origin에만 요청을 보낼 수 있다 라는 Policy (다르면 Origin 끼리 Share 불가)
+- Cross-Origin Resource Sharing : SOP를 우회하기 위한 표준 기술 (서로 다른 Origin 끼리 Resource를 share) 
+   **스프링 부트가 제공하기 때문에 바로 사용할 수 있다.**
+- Origin? : 밑의 3가지를 조합한 것을 의미한다. 
+   - URI 스키마 (http, https)
+   - hostname (whiteship.me, localhost)
+   - 포트(8080, 18080)
+
+**스프링 MVC @CrossOrigin**
+
+- @Controller나 @RequestMapping에 추가하거나
+- WebMvcConfigurer 사용해서 글로벌 설정
 
 
 
