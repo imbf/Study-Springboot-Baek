@@ -474,15 +474,81 @@ Thymeleaf는 Servlet Container의 독립적인 렌더링 엔진 이기 때문에
 - @ControllerAdvice
 - @ExchangeHandler
 
+**SpringBoot의 기본적인 ErrorHandler**
 
+<img src="/Users/baejongjin/Library/Application Support/typora-user-images/image-20200109175506285.png" alt="image-20200109175506285" style="zoom:50%;" />
 
+**스프링 부트가 제공하는 기본 예외 처리기**
 
+- BasicErrorController
+   - HTML 과 JSON 응답 지원
+- 커스터마이징 방법
+   - ErrorController 구현
 
+SampleController.java
 
+```java
+package econovation.springbootmvc;
 
+        import org.springframework.stereotype.Controller;
+        import org.springframework.ui.Model;
+        import org.springframework.web.bind.annotation.ExceptionHandler;
+        import org.springframework.web.bind.annotation.GetMapping;
+        import org.springframework.web.bind.annotation.ResponseBody;
+        import org.springframework.web.bind.annotation.RestController;
 
+@Controller
+public class SampleController {
 
+    @GetMapping("/hello")
+    public String hello(){
+        throw new SampleException();
+    }
 
+    @ExceptionHandler(SampleException.class)	// SampleException.class의 errorHandler
+    public @ResponseBody AppError sampleError(SampleException e){
+        AppError appError = new AppError();
+        appError.setMessage("error.app.key");
+        appError.setReason("IDK IDK IDK");
+        return appError;
+    }
+}
+
+```
+
+SampleException.java
+
+```java
+package econovation.springbootmvc;
+
+public class SampleException extends RuntimeException {
+}
+```
+
+**커스텀 에러 페이지 **(에러 페이지그 없다면 스프링 부트가 제공하는 기본 예외 처리기가 동작되어 페이지를 생성한다.)
+
+- 상태 코드 값에 따라 여러 페이지 보여주기
+
+- src/main/resources/static|template/error/
+
+- 404.html (상태 코드에 따라 html 페이지를 보여준다.)
+
+- 5xx.html (상태 코드에 따라 html 페이지를 보여준드ㅏ.)
+
+- ErrorViewResolver 구현
+
+   ```java
+   public class MyErrorViewResolver implements ErrorViewResolver {
+     @Override
+     public ModelAndView resolveErrorView(HttpServletRequest request,
+     HttpStatus status, Map<String, Object> model) {
+     // Use the request or status to optionally return a ModelAndView
+     return ...
+     }
+   }
+   ```
+
+   
 
 
 

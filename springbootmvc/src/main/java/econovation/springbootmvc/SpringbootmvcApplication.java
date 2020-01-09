@@ -9,5 +9,5 @@ public class SpringbootmvcApplication {
     public static void main(String[] args) {
         SpringApplication.run(SpringbootmvcApplication.class, args);
     }
-    
+
 }
