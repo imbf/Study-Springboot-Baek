@@ -1,12 +1,12 @@
 package econovation.demospringhateoas;
 
-import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class DemospringhateoasApplicationTests {
 
-	@Test
+//	@Test
 	void contextLoads() {
 	}
 
