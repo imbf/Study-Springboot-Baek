@@ -1,7 +1,6 @@
 package econovation.demospringmvc.user;
 
-        import org.springframework.stereotype.Controller;
-        import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.*;
 
 @RestController // @RestController Annotation을 사용하면 @ResponseBody라는 Annotation을 사용하지 않아도 된다.
 public class UserController {

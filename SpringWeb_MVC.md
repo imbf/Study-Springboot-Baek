@@ -143,32 +143,60 @@ public class UserControllerTest {
 
 **정적 리소스 맵핑 : 클라이언트에서 요청이 왔을 때 만들어진 리소스를 그대로 보여주는 것을 의미한다.**
 
-정적 리소스 맵핑 "/**"
+정적 리소스 맵핑 "/**" (<u>기본적으로 맵핑은 Root부터 맵핑 되어 있다.</u>)
 
 - 기본 리소스 위치 ( ex. "/hello.html" => /static/hello.html) **다양한 디렉토리 설정 및 사용 가능** 
-   **@EnableWebMvc** 애노테이션이 Config 파일에 적용되어 있으면 동적 리소스 맵핑이 오버라이딩 한다.
+   **@EnableWebMvc** 애노테이션이 **Config 파일**에 적용되어 있으면 동적 리소스 맵핑이 오버라이딩 한다.
    또는 다른 경로가 맵핑 되어 있다면 맵핑이 오버라이딩 된다.
 
    - classpath:/static
+
    - classpath:/public
+
    - classpath:/resources/
+
    - classpath:/META_INF/resources
-   - spring.mvc.static-path-pattern : 맵핑 설정 변경 가능
+
+   - spring.mvc.static-path-pattern : 맵핑 설정 변경 가능 
+
+      application.properties (정적 리소스 파일을 서비스 받기 위해 url을 localhost:8080/static/ex.html 요청)
+
+      ```java
+      spring.mvc.static-path-pattern=/static/**
+      ```
+
+      
+
    - spring.mvc.static-locations : 리소스 찾을 위치 변경 가능
 
-- Last-Modified 헤더를 보고 304 응답을 보냄![image-20200108211406103](/Users/baejongjin/Library/Application Support/typora-user-images/image-20200108211406103.png)
+- Last-Modified 헤더를 보고 304 응답을 보냄
 
-- ResourceHttpRequestHandler가 처리함
+   if-Modified-Since : Sun, 15 Jul 2018 04:33:26 GMT 이후에 modifed 되면 새롭게 resource를 달라
+   ![image-20200108211406103](/Users/baejongjin/Library/Application Support/typora-user-images/image-20200108211406103.png)
+
+- **정적 리소스를 ResourceHttpRequestHandler가 처리함**
 
    - WebMvcConfigure의 addResourceHandlers로 커스터마이징 할 수 있음
 
    ```java
-   @Override
-   public void addResourceHandlers(ResourceHandlerRegistry registry){
-     registry.addResourceHandler("/m/**")
-       .addResourceLocations("classpath:/m/")
-       .setCachePeriod(20);
+   package econovation.demospringmvc.config;
+   
+   import org.springframework.context.annotation.Configuration;
+   import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+   import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+   
+   @Configuration
+   public class WebConfig implements WebMvcConfigurer {
+       @Override
+       public void addResourceHandlers(ResourceHandlerRegistry registry) { //리소스 핸들러 추가
+           //m으로 시작하는 요청이 오면 classpath기준으로 m디렉토리 밑에서 제공을 하겠다.
+           registry.addResourceHandler("/m/**")
+                   .addResourceLocations("classpath:/m/")
+                   .setCachePeriod(20);
+   
+       }
    }
+   
    ```
 
    
