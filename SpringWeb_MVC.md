@@ -622,10 +622,60 @@ public class SampleController {
    - hostname (whiteship.me, localhost)
    - 포트(8080, 18080)
 
-**스프링 MVC @CrossOrigin**
+**스프링 MVC @CrossOrigin** : 내 리소스를 가져갈 수 있는 Origin을 설정 해 주었다.
 
 - @Controller나 @RequestMapping에 추가하거나
+
+   **SpringcorsserverApplication.js**
+
+   ```java
+   package econovation.springcorsserver;
+   
+   import org.springframework.boot.SpringApplication;
+   import org.springframework.boot.autoconfigure.SpringBootApplication;
+   import org.springframework.web.bind.annotation.CrossOrigin;
+   import org.springframework.web.bind.annotation.GetMapping;
+   import org.springframework.web.bind.annotation.RestController;
+   
+   @SpringBootApplication
+   @RestController
+   public class SpringcorsserverApplication {
+   
+       @CrossOrigin(origins = "http://localhost:18080") // 스키마, 호스트네임, 포트
+       @GetMapping("/hello")
+       public String hello(){
+           return "Hello";
+       }
+   
+       public static void main(String[] args) {
+           SpringApplication.run(SpringcorsserverApplication.class, args);
+       }
+   
+   }
+   
+   ```
+
 - WebMvcConfigurer 사용해서 글로벌 설정
+
+   **src/main/java/econovation.springcorsserver/WebConfig.js**
+
+   ```java
+   package econovation.springcorsserver;
+   
+   import org.springframework.context.annotation.Configuration;
+   import org.springframework.web.servlet.config.annotation.CorsRegistry;
+   import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+   
+   @Configuration
+   public class WebConfig implements WebMvcConfigurer {
+   
+       @Override
+       public void addCorsMappings(CorsRegistry registry) {
+           registry.addMapping("/**").allowedOrigins("http://localhost:18080");
+       }
+   }
+   
+   ```
 
 
 

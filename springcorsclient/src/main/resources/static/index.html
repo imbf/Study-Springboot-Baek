@@ -5,6 +5,19 @@
     <title>Title</title>
 </head>
 <body>
-Welcome
+    <h1>CORS Client</h1>
+<script src="/webjars/jquery/3.4.1/dist/jquery.min.js"></script>
+<script>
+    $(function(){
+        $.ajax({
+            url:"http://localhost:8080/hello"})
+            .done(function(msg){
+                alert(msg);
+            })
+            .fail(function(){
+                alert("fail");
+            });
+    })
+</script>
 </body>
 </html>
