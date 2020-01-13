@@ -21,7 +21,7 @@ public class SampleControllerTest {
     WebClient webClient;
 
     @Test
-    public void hello() throws Exception{
+    public void hello() throws Exception {
 
         HtmlPage page = webClient.getPage("/hello");
         HtmlHeading1 h1 = page.getFirstByXPath("//h1");

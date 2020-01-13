@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile;
 public class TestConfiguration {
 
     @Bean
-    public String hello(){
+    public String hello() {
         return "hello test";
     }
 }

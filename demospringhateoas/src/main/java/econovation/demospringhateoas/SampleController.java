@@ -12,7 +12,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 public class SampleController {
 
     @GetMapping("/hello")
-    public Resource<Hello> hello(){
+    public Resource<Hello> hello() {
         // 객체가 변환해서 나간다.
         Hello hello = new Hello();
         hello.setPrefix("Hey,");

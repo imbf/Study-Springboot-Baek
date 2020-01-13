@@ -207,9 +207,125 @@ public class H2Runner implements ApplicationRunner {
 }
 ```
 
+---
 
+## Spring-Data : ORM, JPA, Spring Data JPA
 
+**ORM(Object-Relational Mapping) 과 JPA(Java Persistence API)**
 
+- 객체와 릴레이션을 맵핑할 때 발생하는 개념적 불일치를 해결하는 프레임워크
+- http://hibernate.org/orm/what-is-an-orm/
+- JPA : ORM을 위한 자바 (EE) 표준
+
+**스프링 데이터 JPA**
+
+- Repository 빈 자동 생성
+- 쿼리 메소드 자동 구현
+- @EnableJpaRepositories (스프링 부트가 자동으로 설정 해줌)
+- **SpringData JPA -> JPA -> Hibernate( JPA 구현체 ) -> Datasource** 
+
+**스프링 데이터 JPA 의존성 추가**
+
+```xml
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+```
+
+**스프링 데이터 JPA 사용하기**
+
+- @Entitiy 클래스 만들기
+
+   ```java
+   package econovation.springbootjpa.account;
+   
+   import javax.persistence.Entity;
+   import javax.persistence.GeneratedValue;
+   import javax.persistence.Id;
+   import java.util.Objects;
+   
+   @Entity
+   public class account {
+       
+       @Id 
+       @GeneratedValue
+       private Long id;
+       
+       private String username;
+       
+       private String password;
+   
+       public Long getId() {
+           return id;
+       }
+       
+       public void setId(Long id) {
+           this.id = id;
+       }
+   
+       public String getUsername() {
+           return username;
+       }
+   
+       public void setUsername(String username) {
+           this.username = username;
+       }
+   
+       public String getPassword() {
+           return password;
+       }
+   
+       public void setPassword(String password) {
+           this.password = password;
+       }
+   
+       @Override
+       public boolean equals(Object o) {
+           if (this == o) return true;
+           if (o == null || getClass() != o.getClass()) return false;
+           account account = (account) o;
+           return Objects.equals(id, account.id) &&
+                   Objects.equals(username, account.username) &&
+                   Objects.equals(password, account.password);
+       }
+   
+       @Override
+       public int hashCode() {
+           return Objects.hash(id, username, password);
+       }
+   }
+   
+   ```
+
+- Repository 만들기
+
+   ```java
+   package econovation.springbootjpa.account;
+   
+   import org.springframework.data.jpa.repository.JpaRepository;
+   
+   
+   public interface AcoountRepository extends JpaRepository<Account, Long> {
+       
+   }
+   ```
+
+**스프링 데이터 Repository 테스트 만들기**
+
+- H2 DB를 테스트 의존성에 추가하기
+
+   ```xml
+   <dependency>
+   	<groupId>com.h2database</groupId>
+     <artifactId>h2</artifactId>
+     <scope>test</scope>
+   </dependency>
+   ```
+
+- @DataJpaTest (슬라이드 테스트) 작성
+
+   
 
 
 

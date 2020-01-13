@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -19,7 +20,7 @@ public class UserControllerTest {
     MockMvc mockMvc;
 
     @Test
-    public void hello() throws Exception{
+    public void hello() throws Exception {
         mockMvc.perform(get("/hello"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("hello"));
@@ -32,11 +33,11 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_XML) // accept header
                 .content(userJson))
-            .andExpect(status().isOk())
-            .andExpect(xpath("/User/username")
-                .string("keesun"))
-            .andExpect(xpath("/User/password")
-                .string("123"));
+                .andExpect(status().isOk())
+                .andExpect(xpath("/User/username")
+                        .string("keesun"))
+                .andExpect(xpath("/User/password")
+                        .string("123"));
 
     }
 }

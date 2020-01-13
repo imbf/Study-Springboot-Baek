@@ -12,7 +12,7 @@ public class HolomanConfiguration {
 
     @Bean   //Holoman 이라는 Bean을 returng하는 설정파일을 만들었다.
     @ConditionalOnMissingBean   // 기본적으로 등록한 Bean이 쓰여야 하지만 우리는 Bean이 등록되지 않는 경우에만 이 Bean을 쓰겟다는 명령
-    public Holoman holoman(HolomanProperties properties){
+    public Holoman holoman(HolomanProperties properties) {
         Holoman holoman = new Holoman();
         holoman.setHowLong(properties.getHowLong());
         holoman.setName(properties.getName());

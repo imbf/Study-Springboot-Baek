@@ -30,7 +30,7 @@ public class SampleControllerTest {
     SampleService mockSampleService;
 
     @Test
-    public void hello() throws Exception{
+    public void hello() throws Exception {
         when(mockSampleService.getName()).thenReturn("jongjin");
 
         mockMvc.perform(get("/hello")).andExpect(content().string("hello jongjin"));

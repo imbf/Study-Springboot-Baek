@@ -19,7 +19,7 @@ public class SpringinitApplicationTests {
     Environment environment;
 
     @Test
-    public void contextLoads(){
+    public void contextLoads() {
         assertThat(environment.getProperty("keesun.name")).isEqualTo("keesun2");
     }
 
