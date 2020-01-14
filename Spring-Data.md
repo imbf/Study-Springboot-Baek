@@ -383,7 +383,29 @@ public class H2Runner implements ApplicationRunner {
    }
    ```
 
-   
+---
+
+## Spring-Data : Database 초기화
+
+**JPA를 사용한 데이터베이스 초기화**
+
+- spring.jpa.hibernate.ddl-auto
+
+- spring.jpa.generate-dll=true 로 설정 해줘야 동작함
+
+   resources/application.properties
+
+   ```
+   spring.jpa.hibernate.ddl-auto=update (다양한 value 종류가 있으니 공부하자!!)
+   spring.jpa.generate-ddl=true
+   spring.jpa.show-sql=true
+   ```
+
+**SQL 스크립트를 사용한 데이터베이스 초기화**
+
+- schema.sql 또는 schema-${platform}.sql (먼저 호출)
+- data.sql 또는 data-${platform}.sql (다음 호출)
+- ${platform} 값은 spring.datasource.platform 으로 설정 가능
 
 
 
