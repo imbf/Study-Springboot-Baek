@@ -16,6 +16,8 @@ public class Account {
 
     private String password;
 
+    private boolean active;
+
     public Long getId() {
         return id;
     }

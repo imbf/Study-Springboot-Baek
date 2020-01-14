@@ -403,11 +403,107 @@ public class H2Runner implements ApplicationRunner {
 
 **SQL 스크립트를 사용한 데이터베이스 초기화**
 
-- schema.sql 또는 schema-${platform}.sql (먼저 호출)
+- schema.sql 또는 schema-${platform}.sql => 스키마 파일만 따로 관리할 수 있다. (먼저 호출)
 - data.sql 또는 data-${platform}.sql (다음 호출)
 - ${platform} 값은 spring.datasource.platform 으로 설정 가능
 
+---
 
+## Spring-Data : Database Migration
+
+Flyway와 Liquidbase가 대표적인데, 지금은 Flyway를 사용하겠습니다.
+
+https://docs.spring.io/spring-boot/docs/2.0.3.RELEASE/reference/htmlsingle/#howto-execute-flyway-database-migrations-on-startup
+
+**의존성 추가**
+
+- org.flywaydb:flyway-core
+
+   ```xml
+   <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+   </dependency>
+   ```
+
+**마이그레이션 디렉토리**
+
+- db/migration 또는 db/migration/{vendor}
+- spring.flyway.locations 로 변경 가능
+
+**마이그레이션 파일 이름**  (한번 적용된 스크립트 파일은 절대로 건드리지 말아야 한다.)
+
+- V숫자__이름.sql
+- V는 꼭 대문자로.
+- 숫자는 순차적으로 (타임스탬프 권장)
+- 숫자와 이름 사이에 언더바 두 개.
+- 이름은 가능한 서술적으로
+
+<img src="/Users/baejongjin/Library/Application Support/typora-user-images/image-20200114110748317.png" alt="image-20200114110748317" style="zoom:50%;" />
+
+---
+
+## Spring-Data : Redis
+
+**캐시, 메시지 브로커, 키/밸류 스토어 등으로 사용 가능.**
+
+**의존성 추가**
+
+- spring-boot-starter-data-redis
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-data-redis</artifactId>
+   </dependency>
+   ```
+
+**Redis 설치 및 실행 (도커)**
+
+- docker run -p 6379:6379 --name redis_boot -d redis
+- docker exec -i -t redis_boot redis-cli
+
+**스프링 데이터 Redis** (application.properties를 통해서 다양한 설정이 가능하다.)
+
+- https://projects.spring.io/spring-data-redis/
+
+- StringRedisTemplate 또는 RedisTemplate
+
+   ```java
+   package econovation.springbootredis;
+   
+   import org.springframework.beans.factory.annotation.Autowired;
+   import org.springframework.boot.ApplicationArguments;
+   import org.springframework.boot.ApplicationRunner;
+   import org.springframework.data.redis.core.StringRedisTemplate;
+   import org.springframework.data.redis.core.ValueOperations;
+   import org.springframework.stereotype.Component;
+   
+   @Component
+   public class RedisRunner implements ApplicationRunner {
+   
+       @Autowired
+       StringRedisTemplate redisTemplate;
+   
+       @Override
+       public void run(ApplicationArguments args) throws Exception {
+           ValueOperations<String,String> values = redisTemplate.opsForValue();
+           values.set("keesun","whiteship");
+           values.set("springboot","2.0");
+           values.set("hello","world");
+       }
+   }
+   ```
+
+- extends CrudRepostiroy
+
+**Redis 주요 커맨드**
+
+- https://redis.io/commands
+- keys *
+- get {key}
+- hgetall {key}
+- get {key} {column}
 
 
 
