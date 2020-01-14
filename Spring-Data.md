@@ -469,9 +469,13 @@ https://docs.spring.io/spring-boot/docs/2.0.3.RELEASE/reference/htmlsingle/#howt
 
 - StringRedisTemplate 또는 RedisTemplate
 
+   RedisRunner.java
+
    ```java
    package econovation.springbootredis;
    
+   import econovation.springbootredis.account.Account;
+   import econovation.springbootredis.account.AccountRepository;
    import org.springframework.beans.factory.annotation.Autowired;
    import org.springframework.boot.ApplicationArguments;
    import org.springframework.boot.ApplicationRunner;
@@ -479,11 +483,16 @@ https://docs.spring.io/spring-boot/docs/2.0.3.RELEASE/reference/htmlsingle/#howt
    import org.springframework.data.redis.core.ValueOperations;
    import org.springframework.stereotype.Component;
    
+   import java.util.Optional;
+   
    @Component
    public class RedisRunner implements ApplicationRunner {
    
        @Autowired
        StringRedisTemplate redisTemplate;
+   
+       @Autowired
+       AccountRepository accountRepository;
    
        @Override
        public void run(ApplicationArguments args) throws Exception {
@@ -491,23 +500,502 @@ https://docs.spring.io/spring-boot/docs/2.0.3.RELEASE/reference/htmlsingle/#howt
            values.set("keesun","whiteship");
            values.set("springboot","2.0");
            values.set("hello","world");
+   
+           Account account = new Account();
+           account.setEmail("whiteship@email.com");
+           account.setUsername("keesun");
+   
+           accountRepository.save(account);
+   
+           Optional<Account> byId = accountRepository.findById(account.getId());
+           System.out.println(byId.get().getUsername());
+           System.out.println(byId.get().getEmail());
        }
    }
+   
    ```
 
 - extends CrudRepostiroy
+
+   account/AccountRepository.java
+
+   ```java
+   package econovation.springbootredis.account;
+   
+   import org.springframework.data.repository.CrudRepository;
+   
+   public interface AccountRepository extends CrudRepository<Account, String> {
+   
+   }
+   ```
 
 **Redis 주요 커맨드**
 
 - https://redis.io/commands
 - keys *
-- get {key}
+- get {key} => key를 사용해서 value를 검색하는 명령어
 - hgetall {key}
 - get {key} {column}
 
+---
 
+## Spring-Data : MongoDB
 
+**MongoDB는 JSON 기반의 도큐먼트 데이터베이스입니다. 스키마가 존재하지 않는다,**
 
+**의존성 추가**
+
+- spring-boot-starter-data-mongodb
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-data-mongodb</artifactId>
+   </dependency>
+   ```
+
+**MongoDB 설치 및 실행 (도커)**
+
+- docker run -p 27017:27017 --name mongo_boot -d mongo
+- docker exec -i -t mongo_boot bash
+- mongo
+
+**스프링 데이터 몽고DB**
+
+- MongoTemplate
+
+   SpringbootmongoApplication.java
+
+   ```java
+   package econovation.springbootmongo;
+   
+   import econovation.springbootmongo.account.Account;
+   import org.springframework.beans.factory.annotation.Autowired;
+   import org.springframework.boot.ApplicationRunner;
+   import org.springframework.boot.SpringApplication;
+   import org.springframework.boot.autoconfigure.SpringBootApplication;
+   import org.springframework.context.annotation.Bean;
+   import org.springframework.data.mongodb.core.MongoTemplate;
+   
+   @SpringBootApplication
+   public class SpringbootmongoApplication {
+   
+       @Autowired
+       MongoTemplate mongoTemplate;
+   
+   
+   
+       public static void main(String[] args) {
+           SpringApplication.run(SpringbootmongoApplication.class, args);
+       }
+   
+       @Bean
+       public ApplicationRunner applicationRunner() {
+           return args -> {
+               Account account = new Account();
+               account.setEmail("aaa@bbb");
+               account.setUsername("aaa");
+   
+               mongoTemplate.insert(account);
+               System.out.println("finished");
+           };
+       }
+   }
+   ```
+
+   account/Account.java
+
+   ```java
+   package econovation.springbootmongo.account;
+   
+   import org.springframework.data.annotation.Id;
+   import org.springframework.data.mongodb.core.mapping.Document;
+   
+   @Document(collection = "accounts")
+   public class Account {
+   
+       @Id
+       private String id;
+   
+       private String username;
+   
+       private String email;
+   
+       public String getId() {
+           return id;
+       }
+   
+       public void setId(String id) {
+           this.id = id;
+       }
+   
+       public String getUsername() {
+           return username;
+       }
+   
+       public void setUsername(String username) {
+           this.username = username;
+       }
+   
+       public String getEmail() {
+           return email;
+       }
+   
+       public void setEmail(String email) {
+           this.email = email;
+       }
+   }
+   ```
+
+- MongoRepository
+
+   AccountRepository.java
+
+   ```java
+   package econovation.springbootmongo.account;
+   
+   import org.springframework.data.mongodb.repository.MongoRepository;
+   
+   public interface AccountRepository extends MongoRepository<Account, String> {
+       
+   }
+   ```
+
+   SpringbootmongoApplication.java
+
+   ```java
+   package econovation.springbootmongo;
+   
+   import econovation.springbootmongo.account.Account;
+   import econovation.springbootmongo.account.AccountRepository;
+   import org.springframework.beans.factory.annotation.Autowired;
+   import org.springframework.boot.ApplicationRunner;
+   import org.springframework.boot.SpringApplication;
+   import org.springframework.boot.autoconfigure.SpringBootApplication;
+   import org.springframework.context.annotation.Bean;
+   import org.springframework.data.mongodb.core.MongoTemplate;
+   
+   @SpringBootApplication
+   public class SpringbootmongoApplication {
+   
+       @Autowired
+       MongoTemplate mongoTemplate;
+   
+       @Autowired
+       AccountRepository accountRepository;
+   
+   
+       public static void main(String[] args) {
+           SpringApplication.run(SpringbootmongoApplication.class, args);
+       }
+   
+       @Bean
+       public ApplicationRunner applicationRunner() {
+           return args -> {
+               Account account = new Account();
+               account.setEmail("whiteship@email.com");
+               account.setUsername("whiteship");
+               accountRepository.insert(account);
+   
+               System.out.println("finished");
+   
+   
+   
+           };
+       }
+   }
+   ```
+
+- 내장형 MongoDB (테스트용) (운영용 mongoDB를 사용하는 것이 아니라 테스트용 MongoDB를 사용했다.)
+
+   - de.flapdoodle.embed:de.flapdoodle.embed.mongo
+
+      1. 의존성 추가
+
+         ```xml
+         <dependency>
+             <groupId>de.flapdoodle.embed</groupId>
+             <artifactId>de.flapdoodle.embed.mongo</artifactId>
+             <scope>test</scope>
+         </dependency>
+         ```
+
+      2. 테스트 파일 작성
+
+         AccountRepository.test
+
+         ```java
+         package econovation.springbootmongo.account;
+         
+         import org.junit.Test;
+         import org.junit.runner.RunWith;
+         import org.springframework.beans.factory.annotation.Autowired;
+         import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+         import org.springframework.test.context.junit4.SpringRunner;
+         
+         import java.util.Optional;
+         
+         import static org.assertj.core.api.Assertions.assertThat;
+         
+         @RunWith(SpringRunner.class)
+         @DataMongoTest  // MongoDB에 관련된 Bean들만 등록된다.
+         public class AccountRepositoryTest {
+         
+             @Autowired
+             AccountRepository accountRepository;
+         
+             @Test
+             public void findByEmail(){
+                 Account account = new Account();
+                 account.setUsername("keesun");
+                 account.setEmail("keesun@mail.com");
+         
+                 accountRepository.save(account);
+         
+                 Optional<Account> byId = accountRepository.findById(account.getId());
+                 assertThat(byId).isNotEmpty();
+         
+                 Optional<Account> byEmail = accountRepository.findByEmail(account.getEmail());
+                 assertThat(byEmail).isNotEmpty();
+                 assertThat(byEmail.get().getUsername()).isEqualTo("keesun");
+             }
+         }
+         
+         ```
+
+- @DataMongoTest
+
+---
+
+## Spring-Data : Neo4j
+
+**Neo4j는 노드간의 연관 관계를 영속화하는데 유리한 그래프 데이터베이스 입니다.**
+
+**의존성 추가**
+
+- spring-boot-starter-data-neo4j
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-data-neo4j</artifactId>
+   </dependency>
+   ```
+
+**Neo4j 설치 및 실행 (도커)**
+
+- docker run -p 7474:7474 -p 7687:7687 -d --name neo4j_boot neo4j
+- http://localhost:7474/browser
+
+**스프링 데이터 Neo4J**
+
+- Neo4jTemplate (Deprecated)
+
+- **SessionFactory**
+
+   Neo4jRunner.java
+
+   ```java
+   package econovation.springbootneo4j;
+   
+   import econovation.springbootneo4j.account.Account;
+   import econovation.springbootneo4j.account.Role;
+   import org.neo4j.ogm.session.Session;
+   import org.neo4j.ogm.session.SessionFactory;
+   import org.springframework.beans.factory.annotation.Autowired;
+   import org.springframework.boot.ApplicationArguments;
+   import org.springframework.boot.ApplicationRunner;
+   import org.springframework.stereotype.Component;
+   
+   @Component
+   public class Neo4jRunner implements ApplicationRunner {
+   
+       @Autowired
+       SessionFactory sessionFactory;
+   
+       @Override
+       public void run(ApplicationArguments args) throws Exception {
+           Account account = new Account();    // account 객체 생성
+           account.setEmail("whiteship@mail.com");
+           account.setUsername("whiteship");
+   
+           Role role = new Role();             // Role 객체 생성
+           role.setName("admin");
+   
+           account.getRoles().add(role);   // account 객체에 role을 등록
+   
+           Session session = sessionFactory.openSession();
+           session.save(account);
+           sessionFactory.close();
+   
+           account.getRoles().add(role);
+   
+           System.out.println("finished");
+       }
+   }
+   
+   ```
+
+   account/Roles.java
+
+   ```java
+   package econovation.springbootneo4j.account;
+   
+   import org.neo4j.ogm.annotation.GeneratedValue;
+   import org.neo4j.ogm.annotation.Id;
+   import org.neo4j.ogm.annotation.NodeEntity;
+   import org.neo4j.ogm.annotation.Relationship;
+   
+   import java.util.Set;
+   
+   @NodeEntity
+   public class Role {
+   
+       @Id @GeneratedValue
+       private Long id;
+   
+       private String name;
+   
+       private String email;
+   
+       public Long getId() {
+           return id;
+       }
+   
+       public void setId(Long id) {
+           this.id = id;
+       }
+   
+       public String getName() {
+           return name;
+       }
+   
+       public void setName(String name) {
+           this.name = name;
+       }
+   
+       public String getEmail() {
+           return email;
+       }
+   
+       public void setEmail(String email) {
+           this.email = email;
+       }
+   }
+   ```
+
+   account/Account.java
+
+   ```java
+   package econovation.springbootneo4j.account;
+   
+   import org.neo4j.ogm.annotation.GeneratedValue;
+   import org.neo4j.ogm.annotation.Id;
+   import org.neo4j.ogm.annotation.NodeEntity;
+   import org.neo4j.ogm.annotation.Relationship;
+   
+   import java.util.HashSet;
+   import java.util.Set;
+   
+   @NodeEntity
+   public class Account {
+   
+       @Id @GeneratedValue
+       private Long id;
+   
+       private String username;
+   
+       private String email;
+   
+       @Relationship(type = "has")	// 관계를 가지도록 Annotation 설정
+       private Set<Role> roles = new HashSet<>(); //Role 타입의 객체를 가지도록 컬렉션 객체 작성
+   
+       public Long getId() {
+           return id;
+       }
+   
+       public void setId(Long id) {
+           this.id = id;
+       }
+   
+       public String getUsername() {
+           return username;
+       }
+   
+       public void setUsername(String username) {
+           this.username = username;
+       }
+   
+       public String getEmail() {
+           return email;
+       }
+   
+       public Set<Role> getRoles() {
+           return roles;
+       }
+   
+       public void setRoles(Set<Role> roles) {
+           this.roles = roles;
+       }
+   
+       public void setEmail(String email) {
+           this.email = email;
+       }
+   }
+   ```
+
+- Neo4jRepository
+
+   account/AccountRepository.java
+
+   ```java
+   package econovation.springbootneo4j.account;
+   
+   import org.springframework.data.neo4j.repository.Neo4jRepository;
+   
+   public interface AccountRepository extends Neo4jRepository<Account, Long> {
+   
+   }
+   ```
+
+   Neo4jRunner.java
+
+   ```java
+   package econovation.springbootneo4j;
+   
+   import econovation.springbootneo4j.account.Account;
+   import econovation.springbootneo4j.account.AccountRepository;
+   import econovation.springbootneo4j.account.Role;
+   import org.neo4j.ogm.session.Session;
+   import org.neo4j.ogm.session.SessionFactory;
+   import org.springframework.beans.factory.annotation.Autowired;
+   import org.springframework.boot.ApplicationArguments;
+   import org.springframework.boot.ApplicationRunner;
+   import org.springframework.stereotype.Component;
+   
+   @Component
+   public class Neo4jRunner implements ApplicationRunner {
+   
+       @Autowired
+       AccountRepository accountRepository;
+   
+       @Override
+       public void run(ApplicationArguments args) throws Exception {
+           Account account = new Account();    // account 객체 생성
+           account.setEmail("aaaa@mail.com");
+           account.setUsername("aaaa");
+   
+           Role role = new Role();             // Role 객체 생성
+           role.setName("user");
+   
+           account.getRoles().add(role);   // account 객체에 role을 등록
+   
+           accountRepository.save(account);
+   
+           System.out.println("finished");
+       }
+   }
+   ```
 
 
 
