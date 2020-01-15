@@ -997,6 +997,28 @@ https://docs.spring.io/spring-boot/docs/2.0.3.RELEASE/reference/htmlsingle/#howt
    }
    ```
 
+---
+
+## Spring-Data : 정리
+
+**SQL Database**
+
+- JDBC Template 사용
+- DataSource 설정하는 방법 (resources/application.properties)
+- Embedded Database : H2, HSQL, Derby
+- Production Database : Hikari Connection Pool 을 사용해서 (MySQL, MariaDB, ...)
+- JPA , Spring Data JPA
+- Mapping process
+- Spring Data JPA Repository
+- Database Create and Drop
+- H2's Web Console
+
+**NOSQL Database** (Template을 주입받아 사용하는 방법, Repository를 만들어서 사용하는 방법)
+
+- Redis
+- MongoDB
+- Neo4j
+
 
 
 
