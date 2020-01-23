@@ -54,8 +54,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-security.version}</version>
-                <scope>test</scope>
             </plugin>
         </plugins>
     </build>
